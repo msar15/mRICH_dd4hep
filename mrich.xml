@@ -1,0 +1,102 @@
+<lccdd>
+  <comment> MRICH </comment>        
+  <define>
+    <constant name="MRICH_rmin"   value="10*cm"/>
+    <constant name="MRICH_rmax"   value="110*cm"/><!--BarrelTracking_rmax"/-->
+    <constant name="MRICH_length" value="-BackwardCherenkov_length"/>
+    <constant name="MRICH_zmin"   value="-145*cm"/> <!--BarrelTracking_length/2.0 - BackwardTracking_length"/-->
+    <constant name="MRICHAerogel_thickness"           value="30.0*mm"/>
+    <constant name="MRICHAerogel_width"               value="126.5*mm"/>
+    <constant name="MRICHFoam_thickness"              value="2*mm"/>
+    <constant name="MRICHFresnelLens_thickness"       value="0.06*inch"/>
+    <constant name="MRICHAerogelLensGap_thickness"    value="2*mm"/>
+    <constant name="MRICHLensMirrorGap_thickness"     value="2*mm"/>
+    <constant name="MRICHPhotoDet_thickness"          value="1.5*mm"/>
+    <constant name="MRICHPhotoDet_length"             value="48.5*mm"/>
+    <constant name="MRICHGlassWindow_width"           value="103.5*mm"/>
+    <constant name="MRICHGlassPhotoDet_thickness"     value="2.0*mm"/>
+    <constant name="MRICHRearExtraSpace_thickness"    value="10.0*mm"/>
+    <constant name="MRICHLensPhotoDet_length"         value="136.4*mm"/>
+    <constant name="MRICHMirror_thickness"            value="2.0*mm"/>
+    <constant name="MRICHMirror_length"               value="MRICHLensPhotoDet_length - MRICHLensMirrorGap_thickness"/>
+    <constant name="MRICHMirror_width1"               value="MRICHAerogel_width "/>
+    <constant name="MRICHMirror_width2"               value="MRICHGlassWindow_width"/>
+
+    <constant name="MRICHFresnelLensEffectiveDiameter" value="6.0*inch"/>
+    <constant name="MRICHFresnelLensGroove_pitch"      value="inch/125"/>
+
+    <constant name="MRICHCarbonFrame_thickness"        value="1.0*mm"/>
+    <constant name="MRICHCarbonFrame_width"            value="MRICHAerogel_width+2.0*MRICHFoam_thickness + 2.0*MRICHCarbonFrame_thickness"/>
+
+    <constant name="MRICHModules_nx"                  value="floor((MRICH_rmax-MRICH_rmin)/MRICHCarbonFrame_width)"/>
+    <constant name="MRICHModules_ny"                  value="floor((MRICH_rmax-MRICH_rmin)/MRICHCarbonFrame_width)"/>
+
+    <constant name="MRICHCarbonFrame_length"
+      value="MRICHAerogel_thickness
+      + 2.0*MRICHCarbonFrame_thickness
+      + 2.0*MRICHFoam_thickness
+      + MRICHAerogelLensGap_thickness
+      + MRICHFresnelLens_thickness
+      + MRICHLensPhotoDet_length
+      + MRICHGlassPhotoDet_thickness
+      + MRICHRearExtraSpace_thickness "/>
+  </define>
+
+  <limits>
+  </limits>
+
+  <regions>
+  </regions>
+
+  <display>
+  </display>
+
+  <detectors>
+    <detector id="MRICH_ID" name="MRICH" type="athena_MRICH" 
+      readout="MRICHHits"
+      projective="false"
+      vis="InvisibleWithDaughters" material="Air">
+      <dimensions rmin="MRICH_rmin" rmax="MRICH_rmax" length="MRICHCarbonFrame_length" zmin="-1.0*abs(MRICH_zmin)"/>
+      <module name="MRICH_module1" vis="InvisibleWithDaughters"
+        width="MRICHCarbonFrame_width"
+        height="MRICHCarbonFrame_width"
+        length="MRICHCarbonFrame_length">
+      <frame vis="AnlGray" thickness="MRICHCarbonFrame_thickness" material="CarbonFiber"/>
+      <aerogel vis="AnlTeal" length="MRICHAerogel_thickness" width="MRICHAerogel_width" material="AerogelOptical">
+        <frame vis="AnlGold_1" thickness="MRICHFoam_thickness" material="PolystyreneFoam" />
+      </aerogel>
+      <lens  vis="AnlViolet" thickness="MRICHFresnelLens_thickness"
+        pitch="MRICHFresnelLensGroove_pitch" focal_length="6.0*inch"
+        effective_diameter="MRICHFresnelLensEffectiveDiameter" 
+        width="MRICHAerogel_width"
+        material="AcrylicOptical"/>
+      <mirror vis="AnlGray" x1="MRICHMirror_width1" x2="MRICHMirror_width2" length="MRICHMirror_length"
+        surface="MRICH_MirrorOpticalSurface" thickness="MRICHMirror_thickness" material="AluminumOxide"/>
+      <photodet width="MRICHGlassWindow_width" thickness="MRICHGlassPhotoDet_thickness"  material="PyrexGlassOptical">
+      <sensor nx="2" ny="2" thickness="MRICHPhotoDet_thickness" width="MRICHPhotoDet_length" material="SiliconOxide"/>
+    </photodet>
+  </module>
+  <!--
+      <layer id="1">
+        <array nx="4" ny="4" module="MRICH_module1">
+          <position x="0" y="0" z="0"/>
+        </array>
+      </layer>
+      -->
+    </detector>
+  </detectors>
+
+  <readouts>
+    <readout name="MRICHHits">
+      <segmentation type="CartesianGridXY" grid_size_x="3*mm" grid_size_y="3*mm" />
+      <id>system:8,module:14,sensor:8,x:32:-16,y:-16</id>
+    </readout>
+  </readouts>
+  
+  <!--Globals>
+    <Parameter Name="mrichInfo" Value="mrichmod/mrich_1_geoparams-0-0-4294967295-1527211159.xml"/>
+  </Globals-->
+
+
+
+</lccdd>
